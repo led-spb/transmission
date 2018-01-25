@@ -383,6 +383,7 @@ tr_sessionGetDefaultSettings (tr_variant * d)
   tr_variantDictAddStr  (d, TR_KEY_bind_address_ipv6,               TR_DEFAULT_BIND_ADDRESS_IPV6);
   tr_variantDictAddBool (d, TR_KEY_start_added_torrents,            true);
   tr_variantDictAddBool (d, TR_KEY_trash_original_torrent_files,    false);
+  tr_variantDictAddBool (d, TR_KEY_sequentional_download,           false);
 }
 
 void
@@ -455,6 +456,7 @@ tr_sessionGetSettings (tr_session * s, tr_variant * d)
   tr_variantDictAddStr  (d, TR_KEY_bind_address_ipv6,            tr_address_to_string (&s->public_ipv6->addr));
   tr_variantDictAddBool (d, TR_KEY_start_added_torrents,         !tr_sessionGetPaused (s));
   tr_variantDictAddBool (d, TR_KEY_trash_original_torrent_files, tr_sessionGetDeleteSource (s));
+  tr_variantDictAddBool (d, TR_KEY_sequentional_download,        tr_sessionIsSequentionalDownload (s));
 }
 
 bool
@@ -940,6 +942,13 @@ sessionSetImpl (void * vdata)
 
   if (tr_variantDictFindBool (settings, TR_KEY_scrape_paused_torrents_enabled, &boolVal))
     session->scrapePausedTorrents = boolVal;
+
+  /**
+  *** Sequentional download
+  **/
+
+  if (tr_variantDictFindBool (settings, TR_KEY_sequentional_download, &boolVal))
+    tr_sessionSetSequentionalDownload (session, boolVal);
 
   data->done = true;
 }
@@ -2764,6 +2773,27 @@ tr_sessionSetTorrentDoneScript (tr_session * session, const char * scriptFilenam
       tr_free (session->torrentDoneScript);
       session->torrentDoneScript = tr_strdup (scriptFilename);
     }
+}
+
+/***
+****
+***/
+
+bool
+tr_sessionIsSequentionalDownload (const tr_session * session)
+{
+  assert (tr_isSession (session));
+
+  return session->isSequentionalDownload;
+}
+
+void
+tr_sessionSetSequentionalDownload (tr_session * session, bool isEnabled)
+{
+  assert (tr_isSession (session));
+  assert (tr_isBool (isEnabled));
+
+  session->isSequentionalDownload = isEnabled;
 }
 
 /***

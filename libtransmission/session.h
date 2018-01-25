@@ -115,6 +115,7 @@ struct tr_session
     bool                         pauseAddedTorrent;
     bool                         deleteSourceTorrent;
     bool                         scrapePausedTorrents;
+    bool                         isSequentionalDownload;
 
     uint8_t                      peer_id_ttl_hours;
 

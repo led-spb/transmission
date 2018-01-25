@@ -764,6 +764,16 @@ const char * tr_sessionGetTorrentDoneScript (const tr_session *);
 void tr_sessionSetTorrentDoneScript (tr_session *, const char * scriptFilename);
 
 
+
+/**
+***
+**/
+
+bool tr_sessionIsSequentionalDownload (const tr_session *);
+
+void tr_sessionSetSequentionalDownload (tr_session *, bool isEnabled);
+
+
 /** @} */
 
 /**
